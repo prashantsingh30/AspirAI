@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## 1. Overview
 
-## Getting Started
+The **ASPIRAI - A Full Stack AI Career Coach** is an advanced, AI-powered platform designed to guide you through your career journey. It offers tailored industry insights, dynamic resume and cover letter builders, and interactive interview preparation with quizzes. This application leverages a modern tech stack to provide an engaging and responsive user experience.
 
-First, run the development server:
+## 2. Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- 🔒 **User Authentication:** Secure sign-up and login powered by Clerk.
+- 📊 **Industry Insights Dashboard:** Access detailed market outlooks, industry growth statistics, demand analysis, top skills, salary ranges, and more.
+- 📝 **Resume Builder:** Create and customize professional resumes with an intuitive interface.
+- ✉️ **Cover Letter Builder:** Craft compelling cover letters using guided templates.
+- 🎤 **Interview Preparation:** Engage in mock interviews and interactive quizzes to sharpen your skills.
+- ⚙️ **Background Processing:** Automate tasks and data handling using Inngest.
+- 📱 **Responsive Design:** Enjoy a fully responsive UI built with Tailwind CSS and Shadcn UI.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 3. Tech Stack
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+- **Frontend:**
+  - React 19 ![React Icon](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+  - Next.js 15 ![Next.js Icon](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)
+  - Tailwind CSS ![Tailwind Icon](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+  - Shadcn UI (custom components)
+- **Backend:**
+  - Next.js API Routes
+  - Prisma ORM
+  - NeonDB
+- **Authentication:** Clerk Authentication
+- **Background Jobs:** Inngest
+- **AI & Data Integration:** Gemini API
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 4. Prerequisites
 
-## Learn More
+Before you begin, ensure you have the following installed:
 
-To learn more about Next.js, take a look at the following resources:
+- [Node.js](https://nodejs.org/) (v16 or higher)
+- npm or yarn
+- Git
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 5. Screenshots
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Here are some screenshots of the application:
 
-## Deploy on Vercel
+- **Screenshot 1:** 
+- **Screenshot 2:**  
+- **Screenshot 3:**  
+- **Screenshot 4:**  
+- **Screenshot 5:** 
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 6. Live Demo
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Check out the final deployed app on Vercel:  
+[https://aspir-ai.vercel.app/](https://aspir-ai.vercel.app/)
