@@ -99,7 +99,7 @@ export default function Home() {
       <section className="w-full py-12 md:py-24 lg:py-12 bg-muted/50">
         <div className="container mx-auto px-4 md:px-6">
           <h2 className="text-3xl font-bold tracking-tighter text-center mb-12">
-            What Our Users Say About SensAI
+            What Our Users Say About AspirAI
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {testimonial.map((testimonial, index) => (
@@ -109,7 +109,7 @@ export default function Home() {
                     <div className="flex items-center space-x-4 mb-4">
                       <div className="relative w-12 h-12 flex-shrink-0">
                         <Image
-                          src={testimonial.image}
+                          src={testimonial.src}
                           alt={testimonial.author}
                           width={40}
                           height={40}
@@ -152,7 +152,7 @@ export default function Home() {
               Frequently Asked Questions
             </h2>
             <p className="text-muted-foreground">
-              Find answers to common questions about our SensAI Platform
+              Find answers to common questions about our AspirAI Platform
             </p>
           </div>
           <div className="max-w-3xl mx-auto">
@@ -172,7 +172,7 @@ export default function Home() {
         <div className="mx-auto py-24 gradient rounded-lg">
           <div className="flex flex-col items-center justify-center text-center space-y-4 max-w-3xl mx-auto">
             <h2 className="text-3xl font-bold tracking-tighter text-primary-foreground sm:text-4xl md:text-5xl">
-              Ready to Accelerate Your Career with SensAI?
+              Ready to Accelerate Your Career with AspirAI?
             </h2>
             <p className="mx-auto max-w-[600px] text-primary-foreground/80 md:text-xl">
               Join thousands of professionals who are transforming their careers

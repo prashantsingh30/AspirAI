@@ -60,7 +60,7 @@ const HeroSection = () => {
               src="/banner.jpeg"
               width={1280}
               height={720}
-              alt="Banner SensAI"
+              alt="Banner AspirAI"
               className="rounded-lg shadow-2xl border mx-auto"
               priority
             />
