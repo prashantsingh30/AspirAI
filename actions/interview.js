@@ -15,6 +15,10 @@ export async function generateQuiz() {
 
   const user = await db.user.findUnique({
     where: { clerkUserId: userId },
+    select: {
+      industry: true,
+      skills: true,
+    },
   });
 
   if (!user) throw new Error("User not found");
@@ -101,6 +105,7 @@ export async function saveQuizResult(questions, answers, score) {
       const result = await model.generateContent(improvementPrompt);
       const response = result.response;
       improvementTip = response.text().trim();
+      console.log(improvementTip);
     } catch (error) {
       console.error("Error Generating improvement tip: ", error);
     }
@@ -129,10 +134,6 @@ export async function getAssessments() {
 
   const user = await db.user.findUnique({
     where: { clerkUserId: userId },
-    select: {
-      industry: true,
-      skills: true,
-    },
   });
 
   if (!user) throw new Error("User not found");

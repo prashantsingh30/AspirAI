@@ -2,6 +2,7 @@
 
 import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
 import { generateAIInsights } from "./dashboard";
 
 export async function updateUser(data) {
@@ -47,7 +48,8 @@ export async function updateUser(data) {
       { timeout: 10000 }
     );
 
-    return { success: true, ...result };
+    revalidatePath("/");
+    return result.user;
   } catch (error) {
     console.error("Error updating user and industry:", error.message);
     throw new Error("Failed to update user: " + error.message);

@@ -66,11 +66,12 @@ const OnboardingForm = ({ industries }) => {
   };
 
   useEffect(() => {
-    if (updateResult?.success) {
-      toast.success("Profile updated successfully!");
+    if (updateResult?.success && !updateLoading) {
+      toast.success("Profile completed successfully!");
       router.push("/dashboard");
+      router.refresh();
     }
-  }, [updateResult]);
+  }, [updateResult, updateLoading]);
 
   const watchIndustry = watch("industry");
 

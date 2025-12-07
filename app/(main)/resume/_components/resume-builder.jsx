@@ -109,15 +109,23 @@ const ResumeBuilder = ({ initialContent }) => {
 
   const onSubmit = async (data) => {
     try {
+      const formattedContent = previewContent
+        .replace(/\n/g, "\n") // Normalize newlines
+        .replace(/\n\s*\n/g, "\n\n") // Normalize multiple newlines to double newlines
+        .trim();
+
+      console.log(previewContent, formattedContent);
       await saveResumeFn(previewContent);
     } catch (error) {
-      console.error("Save error: ", error);
+      console.error("Save error:", error);
     }
   };
 
   const generatePDF = async () => {
     setIsGenerating(true);
     try {
+      const html2pdfModule = await import("html2pdf.js/dist/html2pdf.min.js");
+      const html2pdf = html2pdfModule.default || html2pdfModule;
       const element = document.getElementById("resume-pdf");
       const opt = {
         margin: [15, 15],
@@ -142,7 +150,11 @@ const ResumeBuilder = ({ initialContent }) => {
           Resume Builder
         </h1>
         <div className="space-x-2">
-          <Button variant="destructive" onClick={onSubmit} disabled={isSaving}>
+          <Button
+            variant="destructive"
+            onClick={handleSubmit(onSubmit)}
+            disabled={isSaving}
+          >
             {isSaving ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -177,7 +189,7 @@ const ResumeBuilder = ({ initialContent }) => {
           <TabsTrigger value="preview">Markdown</TabsTrigger>
         </TabsList>
         <TabsContent value="edit">
-          <form className="space-y-8">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Contact Information</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border rounded-lg bg-muted/50">

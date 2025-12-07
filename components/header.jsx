@@ -46,39 +46,45 @@ const Header = async () => {
 
         <div className="flex items-center space-x-2 md:space-x-4">
           <SignedIn>
-            <Link href={"/dashboard"}>
-              <Button variant="outline">
+            <Link href="/dashboard">
+              <Button
+                variant="outline"
+                className="hidden md:inline-flex items-center gap-2"
+              >
                 <LayoutDashboard className="h-4 w-4" />
                 <span className="hidden md:block"> Industry Insights</span>
+              </Button>
+              <Button variant="ghost" className="md:hidden w-10 h-10 p-0">
+                <LayoutDashboard className="h-4 w-4" />
               </Button>
             </Link>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button>
+                <Button className="flex items-center gap-2">
                   <StarsIcon className="h-4 w-4" />
                   <span className="hidden md:block"> Growth Tools </span>
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem>
-                  <Link href={"/resume"} className="flex items-center gap-2">
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem asChild>
+                  <Link href="/resume" className="flex items-center gap-2">
                     <FileText className="h-4 w-4" />
                     <span className="ml-2">Resume Builder</span>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem asChild>
                   <Link
-                    href={"/ai-cover-letter"}
+                    href="/ai-cover-letter"
                     className="flex items-center gap-2"
                   >
                     <PenBox className="h-4 w-4" />
                     <span className="ml-2">Cover Letter</span>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href={"/interview"} className="flex items-center gap-2">
+                <DropdownMenuItem asChild>
+                  <Link href="/interview" className="flex items-center gap-2">
                     <GraduationCap className="h-4 w-4" />
                     <span className="ml-2">Interview Prep</span>
                   </Link>
@@ -98,7 +104,7 @@ const Header = async () => {
               appearance={{
                 elements: {
                   avatarBox: "w-10 h-10",
-                  userButtonPopoverCard: "shadow-x1",
+                  userButtonPopoverCard: "shadow-xl",
                   userPreviewMainIdentifier: "font-semibold",
                 },
               }}

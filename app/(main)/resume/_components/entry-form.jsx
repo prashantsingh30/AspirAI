@@ -81,7 +81,7 @@ const EntryForm = ({ type, entries, onChange }) => {
     if (improveError) {
       toast.error(improveError.message || "Failed to improve description");
     }
-  }, [improvedContent, improveError, isImproving]);
+  }, [improvedContent, improveError, isImproving, setValue]);
 
   const handleImproveDescription = async () => {
     const description = watch("description");

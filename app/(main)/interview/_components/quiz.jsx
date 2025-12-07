@@ -138,7 +138,7 @@ const Quiz = () => {
             return (
               <div className="flex items-center space-x-2" key={index}>
                 <RadioGroupItem value={option} id={`option-${index}`} />
-                <Label htmlFor={`option-$(index)`}>{option}</Label>
+                <Label htmlFor={`option-${index}`}>{option}</Label>
               </div>
             );
           })}
