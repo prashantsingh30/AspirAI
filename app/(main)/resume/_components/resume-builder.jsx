@@ -22,7 +22,6 @@ import EntryForm from "./entry-form";
 import MDEditor from "@uiw/react-md-editor";
 import { entriesToMarkdown } from "@/app/lib/helper";
 import { useUser } from "@clerk/nextjs";
-// import html2pdf from "html2pdf.js/dist/html2pdf.min.js";
 import { toast } from "sonner";
 
 const ResumeBuilder = ({ initialContent }) => {
@@ -58,6 +57,7 @@ const ResumeBuilder = ({ initialContent }) => {
   } = useFetch(saveResume);
 
   const formValues = watch();
+
   useEffect(() => {
     if (initialContent) setActiveTab("preview");
   }, [initialContent]);
@@ -78,8 +78,10 @@ const ResumeBuilder = ({ initialContent }) => {
       parts.push(`💼 [LinkedIn](${contactInfo.linkedin})`);
     if (contactInfo.twitter) parts.push(`🐦 [Twitter](${contactInfo.twitter})`);
 
+    const name = user?.fullName || "";
+
     return parts.length > 0
-      ? `## <div align="center">${user.fullName}</div>
+      ? `## <div align="center">${name}</div>
         \n\n<div align="center">\n\n${parts.join(" | ")}\n\n</div>`
       : "";
   };
@@ -110,8 +112,8 @@ const ResumeBuilder = ({ initialContent }) => {
   const onSubmit = async (data) => {
     try {
       const formattedContent = previewContent
-        .replace(/\n/g, "\n") // Normalize newlines
-        .replace(/\n\s*\n/g, "\n\n") // Normalize multiple newlines to double newlines
+        .replace(/\n/g, "\n")
+        .replace(/\n\s*\n/g, "\n\n")
         .trim();
 
       console.log(previewContent, formattedContent);
@@ -122,22 +124,72 @@ const ResumeBuilder = ({ initialContent }) => {
   };
 
   const generatePDF = async () => {
+    if (typeof window === "undefined") return;
+
     setIsGenerating(true);
     try {
-      const html2pdfModule = await import("html2pdf.js/dist/html2pdf.min.js");
-      const html2pdf = html2pdfModule.default || html2pdfModule;
       const element = document.getElementById("resume-pdf");
-      const opt = {
-        margin: [15, 15],
-        filename: "resume.pdf",
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-      };
+      if (!element) {
+        console.error("resume-pdf element not found");
+        toast.error("Could not find resume content to export.");
+        return;
+      }
 
-      await html2pdf().set(opt).from(element).save();
+      const jsPDFModule = await import("jspdf");
+      const { jsPDF } = jsPDFModule;
+      const html2canvasModule = await import("html2canvas-pro");
+      const html2canvas = html2canvasModule.default || html2canvasModule;
+
+      await new Promise((r) => setTimeout(r, 50));
+
+      const canvas = await html2canvas(element, {
+        scale: 1.5,
+        useCORS: true,
+        logging: false,
+        backgroundColor: "#ffffff",
+        windowWidth: element.scrollWidth,
+        windowHeight: element.scrollHeight,
+      });
+
+      if (!canvas || !canvas.width || !canvas.height) {
+        console.error("Canvas has no size", canvas);
+        toast.error("Failed to capture resume layout.");
+        return;
+      }
+
+      const imgData = canvas.toDataURL("image/jpeg", 0.7);
+
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+
+      const imgWidth = pageWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      if (imgHeight <= pageHeight) {
+        const yOffset = 0;
+        pdf.addImage(imgData, "JPEG", 0, yOffset, imgWidth, imgHeight);
+        pdf.save("resume.pdf");
+        return;
+      }
+
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft > 1) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      pdf.save("resume.pdf");
     } catch (error) {
       console.error("PDF generation error: ", error);
+      toast.error("Failed to generate PDF");
     } finally {
       setIsGenerating(false);
     }
@@ -188,6 +240,7 @@ const ResumeBuilder = ({ initialContent }) => {
           <TabsTrigger value="edit">Form</TabsTrigger>
           <TabsTrigger value="preview">Markdown</TabsTrigger>
         </TabsList>
+
         <TabsContent value="edit">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
             <div className="space-y-4">
@@ -201,7 +254,6 @@ const ResumeBuilder = ({ initialContent }) => {
                     placeholder="your@email.com"
                     error={errors.contactInfo?.email}
                   />
-
                   {errors.contactInfo?.email && (
                     <p className="text-sm text-red-500">
                       {errors.contactInfo.email.message}
@@ -216,7 +268,6 @@ const ResumeBuilder = ({ initialContent }) => {
                     type="tel"
                     placeholder="+91 98765 43210"
                   />
-
                   {errors.contactInfo?.mobile && (
                     <p className="text-sm text-red-500">
                       {errors.contactInfo.mobile.message}
@@ -231,7 +282,6 @@ const ResumeBuilder = ({ initialContent }) => {
                     type="url"
                     placeholder="https://linkedin.com/in/your-profile"
                   />
-
                   {errors.contactInfo?.linkedin && (
                     <p className="text-sm text-red-500">
                       {errors.contactInfo.linkedin.message}
@@ -248,7 +298,6 @@ const ResumeBuilder = ({ initialContent }) => {
                     type="url"
                     placeholder="https://twitter.com/your-handle"
                   />
-
                   {errors.contactInfo?.twitter && (
                     <p className="text-sm text-red-500">
                       {errors.contactInfo.twitter.message}
@@ -258,7 +307,6 @@ const ResumeBuilder = ({ initialContent }) => {
               </div>
             </div>
 
-            {/* Summary */}
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Professional Summary</h3>
               <Controller
@@ -278,7 +326,6 @@ const ResumeBuilder = ({ initialContent }) => {
               )}
             </div>
 
-            {/* Skills */}
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Skills</h3>
               <Controller
@@ -298,7 +345,6 @@ const ResumeBuilder = ({ initialContent }) => {
               )}
             </div>
 
-            {/* Experience */}
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Work Experience</h3>
               <Controller
@@ -319,7 +365,6 @@ const ResumeBuilder = ({ initialContent }) => {
               )}
             </div>
 
-            {/* Education */}
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Education</h3>
               <Controller
@@ -340,7 +385,6 @@ const ResumeBuilder = ({ initialContent }) => {
               )}
             </div>
 
-            {/* Projects */}
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Projects</h3>
               <Controller
@@ -362,6 +406,7 @@ const ResumeBuilder = ({ initialContent }) => {
             </div>
           </form>
         </TabsContent>
+
         <TabsContent value="preview">
           {activeTab === "preview" && (
             <Button
@@ -390,10 +435,11 @@ const ResumeBuilder = ({ initialContent }) => {
             <div className="flex p-3 gap-2 items-center border-2 border-yellow-600 text-yellow-600 rounded mb-2">
               <AlertTriangle className="h-5 w-5" />
               <span className="text-sm">
-                You will lose editied markdown if you update the form data.
+                You will lose edited markdown if you update the form data.
               </span>
             </div>
           )}
+
           <div className="border rounded-lg">
             <MDEditor
               value={previewContent}
@@ -402,13 +448,34 @@ const ResumeBuilder = ({ initialContent }) => {
               preview={resumeMode}
             />
           </div>
-          <div className="hidden">
-            <div id="resume-pdf">
+
+          <div
+            style={{
+              position: "absolute",
+              left: "-10000px",
+              top: 0,
+            }}
+          >
+            <div
+              id="resume-pdf"
+              style={{
+                width: "794px",
+                minHeight: "1123px",
+                padding: "32px 48px",
+                boxSizing: "border-box",
+                background: "white",
+                color: "black",
+                fontFamily:
+                  'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+                lineHeight: 1.4,
+              }}
+            >
               <MDEditor.Markdown
                 source={previewContent}
                 style={{
                   background: "white",
                   color: "black",
+                  fontSize: "12px",
                 }}
               />
             </div>
